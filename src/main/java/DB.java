@@ -8,13 +8,24 @@ public class DB {
 
 
     private static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";        //Configure the driver needed
-    private static final String DB_CONNECTION_URL = "jdbc:mysql://localhost:3306/vet";     //Connection string – where's the database?
+    private static final String DB_CONNECTION_URL = "jdbc:mysql://localhost:3306/geography";     //Connection string – where's the database?
     private static final String USER = "clara";   //TODO replace with your username
     private static final String PASSWORD = "clara";   //TODO replace with your password
     private static final String TABLE_NAME = "elevations";
     private static final String PLACE_COL = "place";
     private static final String ELEV_COL = "elev";
 
+
+    DB() {
+
+        try {
+            Class.forName(JDBC_DRIVER);
+        } catch (ClassNotFoundException cnfe) {
+            System.out.println("Can't instantiate driver class; check you have drives and classpath configured correctly?");
+            cnfe.printStackTrace();
+            System.exit(-1);  //No driver? Need to fix before anything else will work. So quit the program
+        }
+    }
 
     void createTable() {
 
@@ -65,9 +76,9 @@ public class DB {
     }
 
 
-    ArrayList<String> fetchAllRecords() {
+    ArrayList<Elevation> fetchAllRecords() {
 
-        ArrayList<String> allRecords = new ArrayList();
+        ArrayList<Elevation> allRecords = new ArrayList();
 
         try (Connection conn = DriverManager.getConnection(DB_CONNECTION_URL, USER, PASSWORD);
              Statement statement = conn.createStatement()) {
@@ -76,8 +87,10 @@ public class DB {
             ResultSet rsAll = statement.executeQuery(selectAllSQL);
 
             while (rsAll.next()) {
-                String row = rsAll.getString(PLACE_COL) + " " + rsAll.getDouble(ELEV_COL);
-                allRecords.add(row);
+                String place = rsAll.getString(PLACE_COL);
+                double elevation = rsAll.getDouble(ELEV_COL);
+                Elevation elevationRecord = new Elevation(place, elevation);
+                allRecords.add(elevationRecord);
             }
 
             rsAll.close();

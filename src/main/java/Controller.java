@@ -19,13 +19,13 @@ public class Controller {
 
         db = new DB();
         db.createTable();
-        ArrayList<String> allData = db.fetchAllRecords();
+        ArrayList<Elevation> allData = db.fetchAllRecords();
         gui = new GUI(this);
         gui.setListData(allData);
     }
 
 
-    ArrayList<String> getAllData() {
+    ArrayList<Elevation> getAllData() {
         return db.fetchAllRecords();
     }
 

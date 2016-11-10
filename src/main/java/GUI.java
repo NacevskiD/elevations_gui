@@ -6,6 +6,7 @@ import java.util.ArrayList;
 /**
  * Created by we4954cp on 11/9/2016.
  */
+
 public class GUI extends JFrame {
 
     private JPanel mainPanel;
@@ -16,9 +17,9 @@ public class GUI extends JFrame {
     private JLabel elevationLabel;
     private JButton submitButton;
 
-    private JList<String> allElevationsList;
+    private JList<Elevation> allElevationsList;
     private JScrollPane allElevationsListScrollPane;
-    private  DefaultListModel<String> allElevationsModel;
+    private  DefaultListModel<Elevation> allElevationsModel;
 
     private Controller controller;
 
@@ -32,7 +33,7 @@ public class GUI extends JFrame {
 
         //Configure the list model
 
-        allElevationsModel = new DefaultListModel<String>();
+        allElevationsModel = new DefaultListModel<Elevation>();
         allElevationsList.setModel(allElevationsModel);
 
         //and listeners - only one in this program, but put in method to keep tidy.
@@ -76,7 +77,7 @@ public class GUI extends JFrame {
                 enterElevation.setText("");
 
                 //and request all data from DB to update list
-                ArrayList<String> allData = controller.getAllData();
+                ArrayList<Elevation> allData = controller.getAllData();
                 setListData(allData);
             }
         });
@@ -94,7 +95,7 @@ public class GUI extends JFrame {
         elevationLabel = new JLabel("Elevation label");
 
         //and the JList, add it to a JScrollPane
-        allElevationsList = new JList<String>();
+        allElevationsList = new JList<Elevation>();
         allElevationsListScrollPane = new JScrollPane(allElevationsList);
 
         //Create a JPanel to hold all of the above
@@ -116,13 +117,13 @@ public class GUI extends JFrame {
     }
 
 
-    void setListData(ArrayList<String> data) {
+    void setListData(ArrayList<Elevation> data) {
 
         //Display data in allDataTextArea
 
         allElevationsModel.clear();
 
-        for (String elev : data) {
+        for (Elevation elev : data) {
             allElevationsModel.addElement(elev);
         }
     }
