@@ -29,8 +29,12 @@ public class Controller {
         return db.fetchAllRecords();
     }
 
-    void addRecordToDatabase(String placename, double elevation) {
-        db.addRecord(placename, elevation);
+    void addRecordToDatabase(Elevation elevation) {
+        db.addRecord(elevation);
+    }
+
+    void delete(Elevation elevation) {
+        db.delete(elevation);
     }
 
 }

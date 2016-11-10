@@ -17,6 +17,8 @@ public class GUI extends JFrame {
     private JLabel elevationLabel;
     private JButton submitButton;
 
+    private JButton deleteButton;
+
     private JList<Elevation> allElevationsList;
     private JScrollPane allElevationsListScrollPane;
     private  DefaultListModel<Elevation> allElevationsModel;
@@ -49,6 +51,21 @@ public class GUI extends JFrame {
 
     private void addListeners() {
 
+        deleteButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Identify what is selected
+                Elevation elevation = allElevationsList.getSelectedValue();
+                if (elevation == null) {
+                    JOptionPane.showMessageDialog(GUI.this, "Please select an elevation to delete");
+                } else {
+                    controller.delete(elevation);
+                    ArrayList<Elevation> elevations = controller.getAllData();
+                    setListData(elevations);
+                }
+            }
+        });
+
         submitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -70,7 +87,8 @@ public class GUI extends JFrame {
                     return;
                 }
 
-                controller.addRecordToDatabase(place, elev);
+                Elevation elevationRecord = new Elevation(place, elev);
+                controller.addRecordToDatabase(elevationRecord);
 
                 //Clear input JTextFields
                 enterPlaceName.setText("");
@@ -82,6 +100,9 @@ public class GUI extends JFrame {
             }
         });
 
+
+
+
     }
 
     //This does the same as the IntelliJ GUI designer.
@@ -92,11 +113,13 @@ public class GUI extends JFrame {
         enterPlaceName = new JTextField();
         enterElevation = new JTextField();
         placeLabel = new JLabel("Place name");
-        elevationLabel = new JLabel("Elevation label");
+        elevationLabel = new JLabel("Elevation in meters");
 
         //and the JList, add it to a JScrollPane
         allElevationsList = new JList<Elevation>();
         allElevationsListScrollPane = new JScrollPane(allElevationsList);
+
+        deleteButton = new JButton("Delete");
 
         //Create a JPanel to hold all of the above
         mainPanel = new JPanel();
@@ -113,6 +136,7 @@ public class GUI extends JFrame {
         mainPanel.add(enterElevation);
         mainPanel.add(submitButton);
         mainPanel.add(allElevationsListScrollPane);
+        mainPanel.add(deleteButton);
 
     }
 
@@ -120,7 +144,6 @@ public class GUI extends JFrame {
     void setListData(ArrayList<Elevation> data) {
 
         //Display data in allDataTextArea
-
         allElevationsModel.clear();
 
         for (Elevation elev : data) {

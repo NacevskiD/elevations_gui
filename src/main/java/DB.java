@@ -53,18 +53,18 @@ public class DB {
     }
 
 
-    void addRecord(String place, double elevation)  {
+    void addRecord(Elevation elevation)  {
 
         try (Connection conn = DriverManager.getConnection(DB_CONNECTION_URL, USER, PASSWORD)) {
 
             String addElevationSQL = "INSERT INTO " + TABLE_NAME + " VALUES ( ? , ? ) " ;
             PreparedStatement addElevationPS = conn.prepareStatement(addElevationSQL);
-            addElevationPS.setString(1, place);
-            addElevationPS.setDouble(2, elevation);
+            addElevationPS.setString(1, elevation.place);
+            addElevationPS.setDouble(2, elevation.elevation);
 
             addElevationPS.execute();
 
-            System.out.println("Added elevation record for place " + place + " at elevation " + elevation);
+            System.out.println("Added elevation record for place " + elevation);
 
             addElevationPS.close();
             conn.close();
@@ -104,4 +104,30 @@ public class DB {
             return null;  //since we have to return something.
         }
     }
+
+    void delete(Elevation elevation) {
+
+        try (Connection conn = DriverManager.getConnection(DB_CONNECTION_URL, USER, PASSWORD)) {
+
+            String deleteSQLTemplate = "DELETE FROM %s WHERE %s = ? AND %s = ?";
+            String deleteSQL = String.format(deleteSQLTemplate, TABLE_NAME, PLACE_COL, ELEV_COL);
+            System.out.println("The SQL for the prepared statement is " + deleteSQL);
+            PreparedStatement deletePreparedStatement = conn.prepareStatement(deleteSQL);
+            deletePreparedStatement.setString(1, elevation.place);
+            deletePreparedStatement.setDouble(2, elevation.elevation);
+            //For debugging - displays the actual SQL created in the PreparedStatement after the data has been set
+            System.out.println(deletePreparedStatement.toString());
+
+            //Delete
+            deletePreparedStatement.execute();
+
+            //And close everything.
+            deletePreparedStatement.close();;
+            conn.close();
+
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+        }
+    }
+
 }
